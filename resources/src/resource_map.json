@@ -4,6 +4,11 @@
 	"media": [
 		{
 			"type": "png",
+			"defName": "IMAGE_MENU_ICON",
+			"file": "images/menu_icon.png"
+		},
+		{
+			"type": "png",
 			"defName": "IMAGE_NUMBERS",
 			"file": "images/numbers.png"
 		}

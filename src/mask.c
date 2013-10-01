@@ -28,7 +28,7 @@
 
 #define MY_UUID { 0x6D, 0xB9, 0x1B, 0x59, 0x28, 0x59, 0x44, 0x59, 0xB3, 0x7D, 0xB7, 0x0D, 0x40, 0x04, 0xBB, 0x68 }
 
-PBL_APP_INFO(MY_UUID, "Mask", "Matthew Congrove", 1, 0, DEFAULT_MENU_ICON, APP_INFO_WATCH_FACE);
+PBL_APP_INFO(MY_UUID, "Mask", "Matthew Congrove", 1, 0, RESOURCE_ID_IMAGE_MENU_ICON, APP_INFO_WATCH_FACE);
 
 Window window;
 GRect AnalogueGRect;
