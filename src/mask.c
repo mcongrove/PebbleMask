@@ -37,20 +37,21 @@ Layer minute_overlay_layer, hour_overlay_layer;
 GPath minute_overlay_path, hour_overlay_path;
 
 const GPathInfo MINUTE_OVERLAY_POINTS = {
-	3,
+	4,
 	(GPoint[]) {
-		{-12, -47},
 		{0, 0},
-		{12, -47}
+		{-12, -46},
+		{-1, -47},
+		{12, -46}
 	}
 };
 
 const GPathInfo HOUR_OVERLAY_POINTS = {
 	3,
 	(GPoint[]) {
-		{-28, -125},
+		{-31, -125},
 		{0, 0},
-		{28, -125}
+		{31, -125}
 	}
 };
 
@@ -68,7 +69,7 @@ void minute_display_layer_update_callback(Layer *me, GContext* ctx) {
 	PblTm t;
 	get_time(&t);
 
-	unsigned int angle = (t.tm_min * 6);
+	unsigned int angle = ((t.tm_min - (t.tm_min % 5)) * 6);
 	gpath_rotate_to(&minute_overlay_path, (TRIG_MAX_ANGLE / 360) * angle);
 	
 	graphics_context_set_fill_color(ctx, GColorWhite);
@@ -84,7 +85,7 @@ void hour_display_layer_update_callback(Layer *me, GContext* ctx) {
 	PblTm t;
 	get_time(&t);
 
-	unsigned int angle = (t.tm_hour * 30) + (t.tm_min / 2);
+	unsigned int angle = (t.tm_hour * 30);
 	gpath_rotate_to(&hour_overlay_path, (TRIG_MAX_ANGLE / 360) * angle);
 	
 	graphics_context_set_fill_color(ctx, GColorWhite);
