@@ -72,10 +72,10 @@ void minute_display_layer_update_callback(Layer *me, GContext* ctx) {
 	unsigned int angle = ((t.tm_min - (t.tm_min % 5)) * 6);
 	gpath_rotate_to(&minute_overlay_path, (TRIG_MAX_ANGLE / 360) * angle);
 	
-	graphics_context_set_fill_color(ctx, GColorWhite);
+	graphics_context_set_fill_color(ctx, GColorBlack);
 	graphics_fill_circle(ctx, grect_center_point(&me->frame), 44);
 	
-	graphics_context_set_fill_color(ctx, GColorBlack);
+	graphics_context_set_fill_color(ctx, GColorWhite);
 	gpath_draw_filled(ctx, &minute_overlay_path);
 }
 
@@ -88,10 +88,10 @@ void hour_display_layer_update_callback(Layer *me, GContext* ctx) {
 	unsigned int angle = (t.tm_hour * 30);
 	gpath_rotate_to(&hour_overlay_path, (TRIG_MAX_ANGLE / 360) * angle);
 	
-	graphics_context_set_fill_color(ctx, GColorWhite);
+	graphics_context_set_fill_color(ctx, GColorBlack);
 	graphics_fill_circle(ctx, grect_center_point(&me->frame), 125);
 	
-	graphics_context_set_fill_color(ctx, GColorBlack);
+	graphics_context_set_fill_color(ctx, GColorWhite);
 	graphics_fill_circle(ctx, grect_center_point(&me->frame), 47);
 	gpath_draw_filled(ctx, &hour_overlay_path);
 }
@@ -117,7 +117,7 @@ void display_init(AppContextRef *ctx) {
 	layer_add_child(&window.layer, &minute_overlay_layer);
 	
 	bmp_init_container(RESOURCE_ID_IMAGE_NUMBERS, &numbers_image);
-	bitmap_layer_set_compositing_mode(&numbers_image.layer, GCompOpOr);
+	bitmap_layer_set_compositing_mode(&numbers_image.layer, GCompOpAnd);
 	layer_add_child(&window.layer, &numbers_image.layer.layer);
 }
 
