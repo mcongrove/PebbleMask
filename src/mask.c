@@ -31,6 +31,11 @@ static GPath *minute_overlay_path;
 static GPath *hour_overlay_path;
 GBitmap *numbers_image;
 BitmapLayer *numbers_layer;
+static char theme[5];
+
+enum {
+	KEY_THEME = 0x0
+};
 
 const GPathInfo MINUTE_OVERLAY_POINTS = {
 	4,
@@ -50,6 +55,38 @@ const GPathInfo HOUR_OVERLAY_POINTS = {
 		{31, -125}
 	}
 };
+
+void set_theme() {
+	APP_LOG(APP_LOG_LEVEL_INFO, "SET_THEME");
+	
+	if (persist_exists(KEY_THEME)) {
+		persist_read_string(KEY_THEME, theme, 5);
+	}
+	
+	APP_LOG(APP_LOG_LEVEL_INFO, KEY_THEME);
+}
+
+static void in_received_handler(DictionaryIterator *iter, void *context) {
+	APP_LOG(APP_LOG_LEVEL_INFO, "IN_RECEIVED_HANDLER");
+	
+	Tuple *theme_tuple = dict_find(iter, KEY_THEME);
+	
+	if (theme_tuple) {
+		APP_LOG(APP_LOG_LEVEL_INFO, "GOT 'EM");
+		//APP_LOG(APP_LOG_LEVEL_INFO, "Text: %s", theme_tuple->value->cstring);
+	}
+	
+	
+
+	/*		
+	persist_write_string(KEY_THEME, theme_tuple->value->cstring);
+	set_theme();
+	*/
+}
+
+static void in_dropped_handler(AppMessageResult reason, void *context) {
+	APP_LOG(APP_LOG_LEVEL_INFO, "IN_DROPPED_HANDLER");
+}
 
 static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
 	if (tick_time->tm_sec == 0) {
@@ -95,8 +132,12 @@ static void hour_display_layer_update_callback(Layer *layer, GContext* ctx) {
 }
 
 static void init() {
+	app_message_register_inbox_received(in_received_handler);
+	app_message_register_inbox_dropped(in_dropped_handler);
+	app_message_open(64, 0);
+	
 	window = window_create();
-	window_set_background_color(window, GColorBlack);
+	window_set_background_color(window, GColorBlack);	
 	window_stack_push(window, true);
 	
 	Layer *window_layer = window_get_root_layer(window);

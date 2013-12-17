@@ -1,27 +1,32 @@
 {
-  "uuid": "6db91b59-2859-4459-b37d-b70d4004bb68",
-  "shortName": "Mask",
-  "longName": "Mask",
-  "companyName": "Matthew Congrove",
-  "versionCode": 2,
-  "versionLabel": "2.0",
-  "watchapp": {
-    "watchface": true
-  },
-  "appKeys": {},
-  "resources": {
-    "media": [
-    	{
-	        "menuIcon": true,
-			"type": "png",
-			"name": "IMAGE_MENU_ICON",
-			"file": "images/menu_icon.png"
-		},
-		{
-			"type": "png",
-			"name": "IMAGE_NUMBERS",
-			"file": "images/numbers.png"
-		}
-    ]
-  }
+	"uuid": "6db91b59-2859-4459-b37d-b70d4004bb68",
+	"shortName": "Mask",
+	"longName": "Mask",
+	"companyName": "Matthew Congrove",
+	"versionCode": 2,
+	"versionLabel": "2.0",
+	"watchapp": {
+		"watchface": true
+	},
+	"capabilities": [
+		"configurable"
+	],
+	"appKeys": {
+		"timezone": 0
+	},
+	"resources": {
+		"media": [
+			{
+				"menuIcon": true,
+				"type": "png",
+				"name": "IMAGE_MENU_ICON",
+				"file": "images/menu_icon.png"
+			},
+			{
+				"type": "png",
+				"name": "IMAGE_NUMBERS",
+				"file": "images/numbers.png"
+			}
+		]
+	}
 }
