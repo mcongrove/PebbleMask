@@ -52,9 +52,6 @@ const GPathInfo HOUR_OVERLAY_POINTS = {
 };
 
 static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
-	layer_mark_dirty(minute_overlay_layer);
-	layer_mark_dirty(hour_overlay_layer);
-	/*
 	if (tick_time->tm_sec == 0) {
 		layer_mark_dirty(minute_overlay_layer);
 		
@@ -62,7 +59,6 @@ static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
 			layer_mark_dirty(hour_overlay_layer);
 		}
 	}
-	*/
 }
 
 static void minute_display_layer_update_callback(Layer *layer, GContext* ctx) {
@@ -127,8 +123,7 @@ static void init() {
 	bitmap_layer_set_compositing_mode(numbers_layer, GCompOpOr);
 	layer_add_child(window_layer, bitmap_layer_get_layer(numbers_layer));
 	
-//	tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
-	tick_timer_service_subscribe(SECOND_UNIT, handle_minute_tick);
+	tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
 }
 
 static void deinit() {
