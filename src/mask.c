@@ -31,10 +31,11 @@ static GPath *minute_overlay_path;
 static GPath *hour_overlay_path;
 GBitmap *numbers_image;
 BitmapLayer *numbers_layer;
-static char theme[5];
+InverterLayer *inverter_layer;
+static char theme[6] = "dark";
 
 enum {
-	KEY_THEME = 0x0
+	KEY_THEME
 };
 
 const GPathInfo MINUTE_OVERLAY_POINTS = {
@@ -56,36 +57,33 @@ const GPathInfo HOUR_OVERLAY_POINTS = {
 	}
 };
 
-void set_theme() {
-	APP_LOG(APP_LOG_LEVEL_INFO, "SET_THEME");
-	
+static void set_theme() {
 	if (persist_exists(KEY_THEME)) {
-		persist_read_string(KEY_THEME, theme, 5);
+		persist_read_string(KEY_THEME, theme, 6);
 	}
 	
-	APP_LOG(APP_LOG_LEVEL_INFO, KEY_THEME);
+	APP_LOG(APP_LOG_LEVEL_INFO, "SELECTED THEME: %s", theme);
+	
+	bool hide = strcmp(theme, "light") == 0 ? true : false;
+	
+	layer_set_hidden(inverter_layer_get_layer(inverter_layer), hide);
 }
 
 static void in_received_handler(DictionaryIterator *iter, void *context) {
-	APP_LOG(APP_LOG_LEVEL_INFO, "IN_RECEIVED_HANDLER");
-	
 	Tuple *theme_tuple = dict_find(iter, KEY_THEME);
 	
 	if (theme_tuple) {
-		APP_LOG(APP_LOG_LEVEL_INFO, "GOT 'EM");
-		//APP_LOG(APP_LOG_LEVEL_INFO, "Text: %s", theme_tuple->value->cstring);
-	}
-	
-	
+		APP_LOG(APP_LOG_LEVEL_INFO, "SETTING THEME: %s", theme_tuple->value->cstring);
 
-	/*		
-	persist_write_string(KEY_THEME, theme_tuple->value->cstring);
-	set_theme();
-	*/
+		persist_write_string(KEY_THEME, theme_tuple->value->cstring);
+		strncpy(theme, theme_tuple->value->cstring, 6);
+		
+		set_theme();
+	}
 }
 
 static void in_dropped_handler(AppMessageResult reason, void *context) {
-	APP_LOG(APP_LOG_LEVEL_INFO, "IN_DROPPED_HANDLER");
+	
 }
 
 static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
@@ -137,7 +135,6 @@ static void init() {
 	app_message_open(64, 0);
 	
 	window = window_create();
-	window_set_background_color(window, GColorBlack);	
 	window_stack_push(window, true);
 	
 	Layer *window_layer = window_get_root_layer(window);
@@ -164,7 +161,13 @@ static void init() {
 	bitmap_layer_set_compositing_mode(numbers_layer, GCompOpOr);
 	layer_add_child(window_layer, bitmap_layer_get_layer(numbers_layer));
 	
+	// Create the inverter layer
+	inverter_layer = inverter_layer_create(bounds);
+	layer_add_child(window_layer, inverter_layer_get_layer(inverter_layer));
+	
 	tick_timer_service_subscribe(MINUTE_UNIT, handle_minute_tick);
+	
+	set_theme();
 }
 
 static void deinit() {
@@ -175,6 +178,10 @@ static void deinit() {
 	gpath_destroy(hour_overlay_path);
 	gbitmap_destroy(numbers_image);
 	bitmap_layer_destroy(numbers_layer);
+	inverter_layer_destroy(inverter_layer);
+	
+	tick_timer_service_unsubscribe();
+	app_message_deregister_callbacks();
 }
 
 int main(void) {
