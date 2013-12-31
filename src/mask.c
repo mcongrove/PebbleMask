@@ -8,6 +8,8 @@
  */
 #include <pebble.h>
 
+static char THEME[6] = "dark";
+
 Window *window;
 Layer *minute_overlay_layer;
 Layer *hour_overlay_layer;
@@ -16,7 +18,6 @@ static GPath *hour_overlay_path;
 GBitmap *numbers_image;
 BitmapLayer *numbers_layer;
 InverterLayer *inverter_layer;
-static char THEME[6] = "dark";
 
 enum {
 	KEY_THEME
@@ -57,8 +58,6 @@ static void in_received_handler(DictionaryIterator *iter, void *context) {
 	Tuple *theme_tuple = dict_find(iter, KEY_THEME);
 	
 	if (theme_tuple) {
-		APP_LOG(APP_LOG_LEVEL_INFO, "SETTING THEME: %s", theme_tuple->value->cstring);
-
 		persist_write_string(KEY_THEME, theme_tuple->value->cstring);
 		strncpy(THEME, theme_tuple->value->cstring, 6);
 		
