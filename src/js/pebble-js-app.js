@@ -5,8 +5,8 @@ Pebble.addEventListener("ready", function(e) {
 Pebble.addEventListener("showConfiguration", function(e) {
 	var options = JSON.parse(window.localStorage.getItem("options"));
 	
-	var url = "http://wearewearable.com/mask/?" +
-			  "theme=" + encodeURIComponent(options["0"]);
+	var url = "http://wearewearable.com/mask/?v=2.0" +
+			  "&theme=" + encodeURIComponent(options["0"]);
 	
 	Pebble.openURL(url);
 });
