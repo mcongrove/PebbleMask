@@ -8,7 +8,7 @@ Pebble.addEventListener("showConfiguration", function(e) {
 	var url = "http://wearewearable.com/mask/?v=2.0";
 		  
 	if(options != null) {
-		url += "&theme=" + encodeURIComponent(options["0"]);
+		url += "&theme=" + (options["0"] ? encodeURIComponent(options["0"]) : "");
 	}
 	
 	Pebble.openURL(url);
