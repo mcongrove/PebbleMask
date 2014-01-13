@@ -3,8 +3,8 @@
 	"shortName": "Mask",
 	"longName": "Mask",
 	"companyName": "Matthew Congrove",
-	"versionCode": 2,
-	"versionLabel": "2.0",
+	"versionCode": 3,
+	"versionLabel": "2.1",
 	"watchapp": {
 		"watchface": true
 	},

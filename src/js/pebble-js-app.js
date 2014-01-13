@@ -1,31 +1,40 @@
+var config_url = "http://wearewearable.com/mask/?v=2.1";
+
 Pebble.addEventListener("ready", function(e) {
 
 });
-
-Pebble.addEventListener("showConfiguration", function(e) {
-	var options = JSON.parse(window.localStorage.getItem("options"));
 	
-	var url = "http://wearewearable.com/mask/?v=2.0";
-		  
-	if(options != null) {
-		url += "&theme=" + (options["0"] ? encodeURIComponent(options["0"]) : "");
+Pebble.addEventListener("showConfiguration", function(_event) {
+	var url = config_url;
+	
+	for(var i = 0, x = window.localStorage.length; i < x; i++) {
+		var key = window.localStorage.key(i);
+		var val = window.localStorage.getItem(key);
+		
+		if(val != null) {
+			url += "&" + encodeURIComponent(key) + "=" + encodeURIComponent(val);
+		}
 	}
+	
+	console.log(url);
 	
 	Pebble.openURL(url);
 });
 
-Pebble.addEventListener("webviewclosed", function(e) {
-	if(e.response) {
-		var options = JSON.parse(decodeURIComponent(e.response));
+Pebble.addEventListener("webviewclosed", function(_event) {
+	if(_event.response) {
+		var values = JSON.parse(decodeURIComponent(_event.response));
 		
-		window.localStorage.setItem("options", JSON.stringify(options));
+		for(key in values) {
+			window.localStorage.setItem(key, values[key]);
+		}
 		
-		Pebble.sendAppMessage(options,
-			function(e) {
+		Pebble.sendAppMessage(values,
+			function(_event) {
 				console.log("Successfully sent options to Pebble");
 			},
-			function(e) {
-				console.log("Failed to send options to Pebble.\nError: " + e.error.message);
+			function(_event) {
+				console.log("Failed to send options to Pebble.\nError: " + _event.error.message);
 			}
 		);
 	}

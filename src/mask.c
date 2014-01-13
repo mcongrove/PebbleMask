@@ -20,7 +20,7 @@ BitmapLayer *numbers_layer;
 InverterLayer *inverter_layer;
 
 enum {
-	KEY_THEME
+	KEY_THEME = 0x0
 };
 
 const GPathInfo MINUTE_OVERLAY_POINTS = {
@@ -47,22 +47,19 @@ static void set_theme() {
 		persist_read_string(KEY_THEME, THEME, 6);
 	}
 	
-	APP_LOG(APP_LOG_LEVEL_INFO, "SELECTED THEME: %s", THEME);
-	
 	bool hide = strcmp(THEME, "light") == 0 ? true : false;
 	
 	layer_set_hidden(inverter_layer_get_layer(inverter_layer), hide);
+	
+	APP_LOG(APP_LOG_LEVEL_INFO, "SELECTED THEME: %s", THEME);
 }
 
 static void in_received_handler(DictionaryIterator *iter, void *context) {
 	Tuple *theme_tuple = dict_find(iter, KEY_THEME);
 	
-	if (theme_tuple) {
-		persist_write_string(KEY_THEME, theme_tuple->value->cstring);
-		strncpy(THEME, theme_tuple->value->cstring, 6);
-		
-		set_theme();
-	}
+	theme_tuple ? persist_write_string(KEY_THEME, theme_tuple->value->cstring) : false;
+	
+	set_theme();
 }
 
 static void in_dropped_handler(AppMessageResult reason, void *context) {
